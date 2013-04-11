@@ -4,6 +4,7 @@ import Image
 from graphs import *
 import binascii
 import random
+import os
 
 class Source:
     TEXT = 0
@@ -17,23 +18,28 @@ class Source:
         print 'Source: '
 
     def process(self):
-            # Form the databits, from the filename 
-            if self.fname is not None:
-                if self.fname.endswith('.png') or self.fname.endswith('.PNG'): # image
-                    # yo
-                else: # text
-                    size = int(os.path.getsize("testfiles/" + self.fname))
-                    header = self.get_header(size, TEXT)
-                    payload = self.text2bits(self.fname)
-                    databits = header + payload
+        # Form the databits, from the filename 
+        if self.fname is not None:
+            if self.fname.endswith('.png') or self.fname.endswith('.PNG'): # image
+                # yo
+                return
             else:
-                # Send monotone (the payload is all 1s for 
-                # monotone bits)
-            return payload, databits
+                size = int(os.path.getsize(self.fname))
+                header = self.get_header(size, Source.TEXT)
+                payload = self.text2bits(self.fname)
+                databits = header + payload
+                prnt_databits = [str(bit) for bit in databits]
+                #print "databits: " + ", ".join(prnt_databits)
+                #print "len: " + str(len(prnt_databits))
+        else:
+            # Send monotone (the payload is all 1s for 
+            # monotone bits)
+            return
+        return payload, databits
 
     def text2bits(self, filename):
         # Given a text file, convert to bits
-        f = open("testfiles/" + filename)
+        f = open(filename)
         ascii_array = []
         # convert each char to its ascii representation first
         for line in f:
@@ -50,7 +56,7 @@ class Source:
     def int_to_bit_array(self, num, num_bits):
         bits = []
         for i in range(num_bits):
-            bits.insert(0, (size >> i) & 1)
+            bits.insert(0, (num >> i) & 1)
         return bits
 
     def bits_from_image(self, filename):
@@ -63,11 +69,11 @@ class Source:
 
         # initialize databits with 0, 0 to signify text file
         header = []
-        if srctype == TEXT:
+        if srctype == Source.TEXT:
             header = [0, 0]
-        elif srctype == IMAGE:
+        elif srctype == Source.IMAGE:
             header = [0, 1]
-        elif srctype == MONOTONE:
+        elif srctype == Source.MONOTONE:
             header = [1, 0]
         
         # append payload size encoded in next 6 bits

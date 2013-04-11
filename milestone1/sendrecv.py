@@ -130,7 +130,8 @@ if __name__ == '__main__':
     # push into sink
     sink = Sink()
     rcd_payload = sink.process(rcdbits)
-    
+    #rcd_payload = sink.process(databits)
+
     if len(rcd_payload) > 0:
         hd, err = common_srcsink.hamming(rcd_payload, src_payload)
         print 'Hamming distance for payload at frequency', fc,'Hz:', hd, 'BER:', err

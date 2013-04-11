@@ -32,8 +32,8 @@ class Sink:
         #if the first two bits are 00
         if recd_bits[0] == 0 and recd_bits[1] == 0:
             #get the length from the next 6 bits
-            array6bit = recd_bits[2:8]
-            num_bytes = self.length_from_6bit_array(array6bit)
+            array_len = recd_bits[2:8]
+            num_bytes = self.array_of_bits_to_int(array_len)
 
             #truncate the array for this length
             num_bits = num_bytes * 8;
@@ -51,13 +51,6 @@ class Sink:
         # Return the received payload for comparison purposes
         return payload
 
-    def length_from_6bit_array(self, array6bit):
-        array8bit = [0, 0]
-        array8bit = array8bit + array6bit
-        length = self.array_of_8bits_to_int(array8bit)
-
-        return length
-
     def bits2text(self, bits):
         # Convert the received payload to text (string)
         num_bits = len(bits)
@@ -73,11 +66,11 @@ class Sink:
 
         return text
 
-    def array_of_8bits_to_int(self, array8bit):
+    def array_of_bits_to_int(self, array_bits):
         result = 0
-        for i in range(0,len(array8bit)):
+        for i in range(0,len(array_bits)):
             result = result << 1
-            result = result | array8bit[i]
+            result = result | array_bits[i]
 
         return result
 

@@ -60,7 +60,7 @@ class Sink:
         for i in range(0, num_bytes):
             start = i * 8
             next_byte = bits[start:(start+8)]
-            int_from_byte = self.array_of_8bits_to_int(next_byte)
+            int_from_byte = self.array_of_bits_to_int(next_byte)
             next_char = chr(int_from_byte)
             text = text + next_char
 

@@ -1,6 +1,7 @@
 # audiocom library: Source and sink functions
 import common_srcsink as common
 import Image
+from PIL import Image
 from graphs import *
 import binascii
 import random
@@ -22,10 +23,16 @@ class Source:
         if self.fname is not None:
             if self.fname.endswith('.png') or self.fname.endswith('.PNG'): # image
                 # yo
-                return
+                img = Image.open(self.fname)
+                img.convert("L") # make sure it is grayscale
+                dim = img.size()
+                header = get_img_header(dim[0], dim[1], 7)
+                pixel_list = list(img.getdata())
+                payload = bits_from_image(pixel_list)
+                databits = header + payload
             else:
                 size = int(os.path.getsize(self.fname))
-                header = self.get_header(size, Source.TEXT)
+                header = self.get_text_header(size, 6)
                 payload = self.text2bits(self.fname)
                 databits = header + payload
                 prnt_databits = [str(bit) for bit in databits]
@@ -59,23 +66,27 @@ class Source:
             bits.insert(0, (num >> i) & 1)
         return bits
 
-    def bits_from_image(self, filename):
+    def bits_from_image(self, pixel_list):
         # Given an image, convert to bits
+        bits = []
+        for pix in pixel_list:
+            bits += self.int_to_bit_array(pix[0], 8)
+            bits += self.int_to_bit_array(pix[1], 8)
         return bits
 
-    def get_header(self, payload_length, srctype):
+    def get_text_header(self, payload_length, num_bits):
         # Given the payload length and the type of source 
         # (image, text, monotone), form the header
 
         # initialize databits with 0, 0 to signify text file
-        header = []
-        if srctype == Source.TEXT:
-            header = [0, 0]
-        elif srctype == Source.IMAGE:
-            header = [0, 1]
-        elif srctype == Source.MONOTONE:
-            header = [1, 0]
+        header = [0, 0]
         
-        # append payload size encoded in next 6 bits
-        header += self.int_to_bit_array(payload_length, 6)
+        # append payload size encoded in next num_bits bits
+        header += self.int_to_bit_array(payload_length, num_bits)
+        return header
+    
+    def get_img_header(self, width, height, num_bits_each):
+        header = [0, 1]
+        header += self.int_to_bit_array(width, num_bits_each)
+        header += self.int_to_bit_array(height, num_bits_each)
         return header

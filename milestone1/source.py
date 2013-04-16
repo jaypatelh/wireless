@@ -25,10 +25,10 @@ class Source:
                 # yo
                 img = Image.open(self.fname)
                 img.convert("L") # make sure it is grayscale
-                dim = img.size()
-                header = get_img_header(dim[0], dim[1], 7)
+                dim = img.size
+                header = self.get_img_header(dim[0], dim[1], 7)
                 pixel_list = list(img.getdata())
-                payload = bits_from_image(pixel_list)
+                payload = self.bits_from_image(pixel_list)
                 databits = header + payload
             else:
                 size = int(os.path.getsize(self.fname))

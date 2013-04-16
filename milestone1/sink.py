@@ -64,7 +64,7 @@ class Sink:
             payload = recd_bits[16:(num_bits+16)]
 
             #pass the bits to method bits2text
-            if (self.image_from_bits(payload, image_size, "rcd-image.png") == -1)
+            if (self.image_from_bits(payload, image_size, "rcd-image.png") == -1):
                 print "Error reading image"
 
         # Return the received payload for comparison purposes
@@ -99,8 +99,8 @@ class Sink:
         image_file = Image.new("L", dimensions, None)
 
         image_data = []
-        for x in range(0, dimensions[0])
-            for y in range(0, dimensions[1])
+        for x in range(0, dimensions[0]):
+            for y in range(0, dimensions[1]):
                 pixel_num = x*dimensions[1] + y
                 start = pixel_num * 16
                 color_val = bits[start:(start+8)]

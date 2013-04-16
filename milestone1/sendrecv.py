@@ -96,6 +96,7 @@ if __name__ == '__main__':
     src = Source(opt.monotone, opt.fname)
     src_payload, databits = src.process()  
     
+"""
     # instantiate and run the transmitter block
     xmitter = Transmitter(fc, opt.samplerate, opt.one, opt.spb, opt.silence)
     databits_with_preamble = xmitter.add_preamble(databits)
@@ -126,11 +127,12 @@ if __name__ == '__main__':
     one, zero, thresh = r.detect_threshold(demod_samples)
     barker_start = r.detect_preamble(demod_samples, thresh, one)
     rcdbits = r.demap_and_check(demod_samples, barker_start)
+"""
 
     # push into sink
     sink = Sink()
-    rcd_payload = sink.process(rcdbits)
-    #rcd_payload = sink.process(databits)
+    #rcd_payload = sink.process(rcdbits)
+    rcd_payload = sink.process(databits)
 
     if len(rcd_payload) > 0:
         hd, err = common_srcsink.hamming(rcd_payload, src_payload)

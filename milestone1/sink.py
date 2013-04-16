@@ -51,7 +51,7 @@ class Sink:
             #get the length from the next 14 bits
             array_width = recd_bits[2:9]
             image_width = self.array_of_bits_to_int(array_width)
-            array_height = recd_bits[10:16]
+            array_height = recd_bits[9:16]
             image_height = self.array_of_bits_to_int(array_height)
 
             image_size = (image_width, image_height)
@@ -104,14 +104,15 @@ class Sink:
                 pixel_num = x*dimensions[1] + y
                 start = pixel_num * 16
                 color_val = bits[start:(start+8)]
+                color_num = self.array_of_bits_to_int(color_val)
                 alpha_val = bits[(start+8):(start+16)]
+                alpha_num = self.array_of_bits_to_int(alpha_val)
                 next_pixel = (color_val, alpha_val)
                 image_data.append(next_pixel)
 
         image_file.putdata(image_data)
         image_file.save(filename)
         print "Done writing to image"
-
         return
 
     def read_header(self, header_bits): 

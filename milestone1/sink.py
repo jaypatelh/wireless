@@ -110,6 +110,8 @@ class Sink:
                 next_pixel = (color_val, alpha_val)
                 image_data.append(next_pixel)
 
+        print image_data
+
         image_file.putdata(image_data)
         image_file.save(filename)
         print "Done writing to image"

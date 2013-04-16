@@ -99,8 +99,8 @@ class Sink:
         image_file = Image.new("L", dimensions, None)
 
         image_data = []
-        for x in range(0, dimensions[0])
-            for y in range(0, dimensions[1])
+        for x in range(0, dimensions[0]):
+            for y in range(0, dimensions[1]):
                 pixel_num = x*dimensions[1] + y
                 start = pixel_num * 16
                 color_val = bits[start:(start+8)]
@@ -109,6 +109,7 @@ class Sink:
                 image_data.append(next_pixel)
 
         image_file.putdata(image_data)
+        image_file.save(filename)
         print "Done writing to image"
 
         return

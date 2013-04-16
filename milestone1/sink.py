@@ -109,6 +109,7 @@ class Sink:
                 image_data.append(next_pixel)
 
         image_file.putdata(image_data)
+        image_file.save(filename)
         print "Done writing to image"
 
         return

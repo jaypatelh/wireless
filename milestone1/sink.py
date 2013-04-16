@@ -96,18 +96,18 @@ class Sink:
     def image_from_bits(self, bits, dimensions, filename):
         # Convert the received payload to an image and save it
 
-        image_file = Image.new("L", dimensions, None)
+        image_file = Image.new("L", dimensions)
 
         image_data = []
         for x in range(0, dimensions[0]):
             for y in range(0, dimensions[1]):
                 pixel_num = x*dimensions[1] + y
                 start = pixel_num * 16
-                color_val = bits[start:(start+8)]
-                color_num = self.array_of_bits_to_int(color_val)
-                alpha_val = bits[(start+8):(start+16)]
-                alpha_num = self.array_of_bits_to_int(alpha_val)
-                next_pixel = (color_val, alpha_val)
+                color_bits = bits[start:(start+8)]
+                color_num = self.array_of_bits_to_int(color_bits)
+                alpha_bits = bits[(start+8):(start+16)]
+                alpha_num = self.array_of_bits_to_int(alpha_bits)
+                next_pixel = (color_num, alpha_num)
                 image_data.append(next_pixel)
 
         print image_data

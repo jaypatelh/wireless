@@ -1,10 +1,9 @@
 # audiocom library: Source and sink functions
 import common_srcsink
-import Image
+from PIL import Image
 from graphs import *
 import binascii
 import random
-
 
 class Sink:
 
@@ -96,7 +95,8 @@ class Sink:
     def image_from_bits(self, bits, dimensions, filename):
         # Convert the received payload to an image and save it
 
-        image_file = Image.new("L", dimensions)
+        #print dimensions
+        image_file = Image.new('L', dimensions)
 
         image_data = []
         for x in range(0, dimensions[0]):
@@ -110,11 +110,16 @@ class Sink:
                 next_pixel = (color_num, alpha_num)
                 image_data.append(next_pixel)
 
-        print image_data
+        #print image_data
 
-        image_file.putdata(image_data)
-        image_file.save(filename)
+        vals = [elem[0] for elem in image_data]
+
+        image_file.putdata(vals)
+        image_file.save("temp.png", "PNG")
         print "Done writing to image"
+
+        written_img = Image.open("temp.png")
+        print list(written_img.getdata())
         return
 
     def read_header(self, header_bits): 

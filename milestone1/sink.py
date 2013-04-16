@@ -7,6 +7,7 @@ import random
 
 
 class Sink:
+
     def __init__(self):
         # no initialization required for sink 
         print 'Sink:'
@@ -44,9 +45,27 @@ class Sink:
 
             #print the returned value
             print "output: " + text
+
         # If its an image, save it as "rcd-image.png"
         elif recd_bits[0] == 0 and recd_bits[1] == 1:
-            print "image"
+            #get the length from the next 14 bits
+            array_width = recd_bits[2:9]
+            image_width = self.array_of_bits_to_int(array_width)
+            array_height = recd_bits[10:16]
+            image_height = self.array_of_bits_to_int(array_height)
+
+            image_size = (image_width, image_height)
+
+            #Every pixel is 2 bytes and num_pixels = width*height
+            num_bytes = image_width * image_width * 2;
+
+            #truncate the array for this length
+            num_bits = num_bytes * 8;
+            payload = recd_bits[16:(num_bits+16)]
+
+            #pass the bits to method bits2text
+            if (self.image_from_bits(payload, image_size, "rcd-image.png") == -1)
+                print "Error reading image"
 
         # Return the received payload for comparison purposes
         return payload
@@ -74,9 +93,24 @@ class Sink:
 
         return result
 
-    def image_from_bits(self, bits,filename):
+    def image_from_bits(self, bits, dimensions, filename):
         # Convert the received payload to an image and save it
-        # No return value required .
+
+        image_file = Image.new("L", dimensions, None)
+
+        image_data = []
+        for x in range(0, dimensions[0])
+            for y in range(0, dimensions[1])
+                pixel_num = x*dimensions[1] + y
+                start = pixel_num * 16
+                color_val = bits[start:(start+8)]
+                alpha_val = bits[(start+8):(start+16)]
+                next_pixel = (color_val, alpha_val)
+                image_data.append(next_pixel)
+
+        image_file.putdata(image_data)
+        print "Done writing to image"
+
         return
 
     def read_header(self, header_bits): 

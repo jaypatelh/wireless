@@ -3,6 +3,8 @@ Header:
 First two characters are data type
 
 00: Text
-01: Image
-
 Next 6 characters are number of BYTES (not number of bits) in the packet
+
+01: Image
+Next 7 characters is the width of the image
+Next 7 characters is the height of the image 

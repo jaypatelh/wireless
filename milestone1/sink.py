@@ -59,7 +59,7 @@ class Sink:
             payload = recd_bits[16:(num_bits+16)]
 
             #pass the bits to method bits2text
-            if (self.image_from_bits(payload, image_size, "recd-image.png") == -1):
+            if (self.image_from_bits(payload, image_size, "rcd-image.png") == -1):
                 print "Error reading image"
 
         elif recd_bits[0] == 1 and recd_bits[1] == 0: # i.e. monotone

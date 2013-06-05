@@ -36,7 +36,6 @@ class Transmitter:
         Output should be an array of samples.
         '''
         # fill in your implemenation
-
         num_samples = len(databits_with_preamble)*self.spb
         samples_array = np.empty(num_samples)
         curr_num = 0
@@ -48,6 +47,16 @@ class Transmitter:
                 for i in range(self.spb):
                     samples_array[i+(self.spb*curr_num)] = self.one
             curr_num += 1
+
+        samples_array = []
+
+        for bit_number in range(0, databits_with_preamble.length):
+                if(databits_with_preamble[bit_number] == 0):
+                    for sample_number in range(0, self.spb):
+                        samples_array = samples_array + [0]
+                else if (databits_with_preamble[bit_number] == 1):
+                    for sample_number in range(0, self.spb):
+                        samples_array = samples_array + [one]
 
         return samples_array
 

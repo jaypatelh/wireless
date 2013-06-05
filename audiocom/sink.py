@@ -89,7 +89,7 @@ class Sink:
         result = 0
         for i in range(0,len(array_bits)):
             result = result << 1
-            result = result | int(array_bits[i])
+            result = result | array_bits[i]
 
         return result
 

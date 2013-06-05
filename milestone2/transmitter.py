@@ -1,6 +1,6 @@
 import math
 import common_txrx as common
-import numpy
+import numpy as np
 
 class Transmitter:
     def __init__(self, carrier_freq, samplerate, one, spb, silence):
@@ -9,6 +9,7 @@ class Transmitter:
         self.one = one
         self.spb = spb
         self.silence = silence
+        self.preamble = np.array([1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1])
         print 'Transmitter: '
 
     def add_preamble(self, databits):
@@ -21,17 +22,12 @@ class Transmitter:
         '''
         # fill in your implementation
 
-        silence_bits = [];
-        for s in range(0, self.silence):
-            silence_bits = silence_bits + [0]
-
-        preamble_bits = self.get_preamble
-        databits_with_preamble = silence_bits + preamble_bits + databits
+        silence_bits = np.zeros(self.silence, dtype=int)
+        preamble_bits = np.array(self.preamble)
+        data_bits = np.array(databits)
+        databits_with_preamble = np.concatenate([silence_bits, preamble_bits, data_bits])
 
         return databits_with_preamble
-
-    def get_preamble
-        return [1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1]
 
     def bits_to_samples(self, databits_with_preamble):
         '''
@@ -41,19 +37,19 @@ class Transmitter:
         '''
         # fill in your implemenation
 
-        samples_array = []
+        num_samples = len(databits_with_preamble)*self.spb
+        samples_array = np.empty(num_samples)
+        curr_num = 0
+        for bit_number in range(len(databits_with_preamble)):
+            if databits_with_preamble[bit_number] == 0:
+                for i in range(self.spb):
+                    samples_array[i+(self.spb*curr_num)] = 0
+            elif databits_with_preamble[bit_number] == 1:
+                for i in range(self.spb):
+                    samples_array[i+(self.spb*curr_num)] = self.one
+            curr_num += 1
 
-        for bit_number in range(0, databits_with_preamble.length):
-                if(databits_with_preamble[bit_number] == 0):
-                    for sample_number in range(0, self.spb):
-                        samples_array = samples_array + [0]
-                else if (databits_with_preamble[bit_number] == 1):
-                    for sample_number in range(0, self.spb):
-                        samples_array = samples_array + [one]
-
-        samples = np.array(samples_array)
-        return samples
-        
+        return samples_array
 
     def modulate(self, samples):
         '''

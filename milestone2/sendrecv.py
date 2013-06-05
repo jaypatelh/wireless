@@ -101,8 +101,8 @@ if __name__ == '__main__':
     databits_with_preamble = xmitter.add_preamble(databits)
     samples = xmitter.bits_to_samples(databits_with_preamble)
     mod_samples = xmitter.modulate(samples)
-
-####################################    
+    """ 
+    ####################################    
     # create channel instance
     if opt.bypass:
         h = [float(x) for x in opt.h.split(' ')]
@@ -117,20 +117,21 @@ if __name__ == '__main__':
         # should only happen for audio channel
         print "I didn't get any samples; is your microphone or speaker OFF?"
         sys.exit(1)
-#################################
-
+    #################################
+    """
     # process the received samples
     # make receiver
     r = Receiver(fc, opt.samplerate, opt.spb)
-    demod_samples = r.demodulate(samples_rx)
+    #demod_samples = r.demodulate(samples_rx)
+    demod_samples = r.demodulate(mod_samples)
     one, zero, thresh = r.detect_threshold(demod_samples)
     barker_start = r.detect_preamble(demod_samples, thresh, one)
     rcdbits = r.demap_and_check(demod_samples, barker_start)
 
     # push into sink
     sink = Sink()
-    #rcd_payload = sink.process(rcdbits)
-    rcd_payload = sink.process(databits)
+    rcd_payload = sink.process(rcdbits)
+    #rcd_payload = sink.process(databits)
 
     if len(rcd_payload) > 0:
         hd, err = common_srcsink.hamming(rcd_payload, src_payload)
